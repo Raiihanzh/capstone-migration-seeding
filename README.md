@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 # CodeIgniter 4 Application Starter
 
 ## What is CodeIgniter?
@@ -75,3 +74,6 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 =======
 # Session-dan-filter-codeigniter-4
 >>>>>>> 7e3187d46a52edda0813e9856a94c6ec7100b12d
+=======
+# capstone-migration-seeding
+>>>>>>> 2ec2641c583ddfa2d53f4318d07648a12c45dbd3
