@@ -9,13 +9,15 @@ class Home extends BaseController
     protected $productModel;
 
     function __construct(){
-    $this->productModel = new ProductModel();
-}
+        helper(['form', 'number']);
+        $this->productModel = new ProductModel();
+    }
 
     public function index()
     {
-       return view('v_home', [
-	'products' => $this->productModel->findAll()
-    ]);
+
+    return view('v_home', [
+            'products' => $this->productModel->findAll()
+        ]);
     }
 }

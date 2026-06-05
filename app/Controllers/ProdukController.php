@@ -4,7 +4,10 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use CodeIgniter\HTTP\ResponseInterface;
+
 use App\Models\ProductModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class ProdukController extends BaseController
 {
@@ -82,5 +85,31 @@ public function delete($id)
     $this->productModel->delete($id);
 
     return redirect('produk')->with('success', 'Data Berhasil Dihapus');
+}
+
+public function download()
+{
+    $products = $this->productModel->findAll();
+
+    $html = view('produk/download_pdf', [
+        'products' => $products
+    ]);
+
+    $filename = date('Y-m-d-H-i-s') . '-produk.pdf';
+
+    // 🔥 WAJIB TAMBAHKAN INI
+    $options = new Options();
+    $options->set('isRemoteEnabled', true);
+    $options->set('chroot', FCPATH); // batasi akses ke folder public
+
+    $dompdf = new Dompdf($options);
+
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    $dompdf->stream($filename, [
+        'Attachment' => true
+    ]);
 }
 }
