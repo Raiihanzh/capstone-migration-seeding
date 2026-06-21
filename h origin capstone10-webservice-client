@@ -1,0 +1,18 @@
+* [33m7508c68[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mcapstone10-webservice-client[m[33m, [m[1;32mcapstone9-library[m[33m)[m menambahkan data transaksi pembelian
+* [33md008f84[m[33m ([m[1;31morigin/capstone9-library[m[33m)[m add library feature capstone 9
+* [33mbcd2278[m[33m ([m[1;31morigin/capstone8-CRUD[m[33m, [m[1;32mcapstone8-CRUD[m[33m, [m[1;32mcapstone7-read-validation[m[33m)[m initial commit belajar-ci
+* [33m3009aa5[m[33m ([m[1;31morigin/capstone7-read-validation[m[33m)[m add read validation feature
+*   [33mce98df8[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m fix conflict
+[32m|[m[33m\[m  
+[32m|[m * [33m2ec2641[m Initial commit
+* [33ma475242[m first commit migration & seeding
+*   [33m25f40d9[m merge remote repo
+[34m|[m[35m\[m  
+[34m|[m * [33m7e3187d[m Initial commit
+* [33m62c11e7[m update session dan filter CodeIgniter 4
+*   [33mf15404a[m first commit CI4 Caps4
+[36m|[m[1;31m\[m  
+[36m|[m * [33m17b0ab8[m Initial commit
+* [33md0c41ad[m first commit belajar ci
+* [33mf3f7254[m[33m ([m[1;32mweek4[m[33m)[m init project CI4
+* [33mca2a2e7[m[33m ([m[1;32mweek1-3[m[33m)[m Instalasi CI - Routes - Layout
