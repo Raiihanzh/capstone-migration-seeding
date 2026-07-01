@@ -52,6 +52,7 @@
 
 <?= form_close() ?> 
     </div>
+
     <div class="col-lg-6">
         <table class="table">
   <thead>
@@ -77,84 +78,103 @@
           endforeach;
       endif;
       ?>
+
       <tr>
           <td colspan="2"></td>
           <td>Subtotal</td>
           <td><?= number_to_currency($total, 'IDR') ?></td>
       </tr>
+
+      <!-- ✅ DISKON -->
       <tr>
           <td colspan="2"></td>
-          <td>Total</td>
-          <td><span id="total"><?= number_to_currency($total, 'IDR') ?></span></td>
+          <td style="color:red;">Diskon</td>
+          <td style="color:red;">
+              -<?= number_to_currency($diskon, 'IDR') ?>
+          </td>
       </tr>
+
+      <!-- ✅ GRAND TOTAL -->
+      <tr>
+          <td colspan="2"></td>
+          <td><strong>Grand Total</strong></td>
+          <td><strong><span id="total"></span></strong></td>
+      </tr>
+
   </tbody>
 </table>
     </div>
 </div>
+
 <?= $this->endSection() ?>
+
 <?= $this->section('script') ?>
 <script>
 $(document).ready(function() {
-      let ongkir = 0;
-        let subtotal = <?= $total ?>;
-        hitungTotal();
+    let ongkir = 0;
+    let subtotal = <?= $total ?>;
+    let diskon = <?= $diskon ?>;
+
+    hitungTotal();
 
     function hitungTotal() {
-        let total = subtotal + ongkir;
+        let total = subtotal - diskon + ongkir;
 
-    $("#ongkir").val(ongkir);
-    $("#total").text(`IDR ${total.toLocaleString('id-ID')}`);
-    $("#total_harga").val(total);
+        $("#ongkir").val(ongkir);
+        $("#total").text(`IDR ${total.toLocaleString('id-ID')}`);
+        $("#total_harga").val(total);
     }
 
-	$('#kelurahan').select2({
-	    placeholder: 'Cari daerah tujuan',
-	    minimumInputLength: 3, 
+    $('#kelurahan').select2({
+        placeholder: 'Cari daerah tujuan',
+        minimumInputLength: 3, 
         ajax: {
-    url: '<?= site_url('ajax/destinations') ?>',
-    dataType: 'json',
-    delay: 300,
-    data: function(params) {
-        return {
-            q: params.term
-        };
-    },
-    processResults: function(data) {
-        return data;
-    },
-    cache: true
-}
-	});
+            url: '<?= site_url('ajax/destinations') ?>',
+            dataType: 'json',
+            delay: 300,
+            data: function(params) {
+                return {
+                    q: params.term
+                };
+            },
+            processResults: function(data) {
+                return data;
+            },
+            cache: true
+        }
+    });
 
     $("#kelurahan").on('change', function () {
-    let id_kelurahan = $(this).val();
+        let id_kelurahan = $(this).val();
 
-    $("#layanan").empty();
-    ongkir = 0;
-    hitungTotal(); 
+        $("#layanan").empty();
+        ongkir = 0;
+        hitungTotal(); 
 
-    $.ajax({
-    url: "<?= site_url('ajax/costs') ?>", 
-    dataType: "json",
-    data: {
-        destination: id_kelurahan
-    },
-    success: function (data) { 
-        data.forEach(function (item) {
-            $("#layanan").append(
-                $('<option>', {
-                    value: item.cost,
-                    text: `${item.description} (${item.service}) : estimasi ${item.etd}`
-                })
-            );
+        $.ajax({
+            url: "<?= site_url('ajax/costs') ?>", 
+            dataType: "json",
+            data: {
+                destination: id_kelurahan
+            },
+            success: function (data) { 
+                data.forEach(function (item) {
+                    $("#layanan").append(
+                        $('<option>', {
+                            value: item.cost,
+                            text: `${item.description} (${item.service}) : estimasi ${item.etd}`
+                        })
+                    );
+                });
+            }
         });
-    }
-});
-});
-$("#layanan").on('change', function() {
-    ongkir = parseInt($(this).val());
-    hitungTotal();
-}); 
+    });
+
+    $("#layanan").on('change', function() {
+        ongkir = parseInt($(this).val());
+        hitungTotal();
+    }); 
 });
 </script>
+
 <?= $this->endSection() ?>
