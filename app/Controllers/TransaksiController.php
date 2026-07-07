@@ -119,14 +119,23 @@ public function checkout()
     // subtotal
     $subtotal = $this->cart->total();
 
-    // hitung diskon
-    $diskon = hitung_diskon($total_unit, $subtotal);
+    // hitung PPN 12%
+    $ppn = hitung_ppn($subtotal);
 
-    $data = [
-        'items'  => $cartItems,
-        'total'  => $subtotal,
-        'diskon' => $diskon
-    ];
+    // hitung biaya admin
+    $biaya_admin = hitung_biaya_admin($subtotal);
+
+    $kode_kupon = '';
+    $diskon_kupon = 0;
+
+$data = [
+    'items'          => $cartItems,
+    'total'          => $subtotal,
+    'ppn'            => $ppn,
+    'biaya_admin'    => $biaya_admin,
+    'kode_kupon'     => $kode_kupon,
+    'diskon_kupon'   => $diskon_kupon,
+];
 
     return view('v_checkout', $data);
 }
@@ -156,6 +165,8 @@ public function destinations()
     return $this->response->setJSON([
         'results' => $results
     ]);
+
+    
 }
 
 public function costs()
@@ -204,26 +215,55 @@ public function buy()
         $total_unit += $item['qty'];
     }
 
-    $diskon = round(hitung_diskon($total_unit, $subtotal));
+    // Hitung PPN 12%
+    $ppn = round(hitung_ppn($subtotal));
+
+    $biaya_admin = round(hitung_biaya_admin($subtotal));
 
     $ongkir = (int) $this->request->getPost('ongkir');
 
-    $grand_total = $subtotal - $diskon + $ongkir;
+    $kode_kupon = $this->request->getPost('kode_kupon');
 
-    $transaction = [
-        'username'    => $this->request->getPost('username'),
-        'alamat'      => $this->request->getPost('alamat'),
-        'ongkir'      => $ongkir,
-        'total_harga' => $subtotal,
-        'diskon'      => $diskon, // ✅ SIMPAN DI SINI
-        'grand_total' => $grand_total, // ✅ OPTIONAL tapi bagus
-        'status'      => 0, 
-    ];
+    $diskon_kupon = round(hitung_kupon($kode_kupon, $subtotal));
 
-    if (!$this->transactionModel->insert($transaction)) {
-        $db->transRollback();
-        return redirect()->back()->with('error', 'Gagal membuat transaksi');
-    }
+    $ppn = round(hitung_ppn($subtotal));
+
+    $biaya_admin = round(hitung_biaya_admin($subtotal));
+
+    // Grand Total sesuai soal nomor 1
+   $grand_total =
+    $subtotal
+    - $diskon_kupon
+    + $ppn
+    + $biaya_admin
+    + $ongkir;
+
+  $transaction = [
+
+    'username'       => $this->request->getPost('username'),
+
+    'alamat'         => $this->request->getPost('alamat'),
+
+    'ongkir'         => $ongkir,
+
+    'total_harga'    => $subtotal,
+
+
+    'ppn'            => $ppn,
+
+    'biaya_admin'    => $biaya_admin,
+
+    'kode_kupon'     => $kode_kupon,
+
+    'diskon_kupon'   => $diskon_kupon,
+
+    'status'         => 0
+];
+
+  if (!$this->transactionModel->insert($transaction)) {
+    $db->transRollback();
+    return redirect()->back()->with('error', 'Gagal membuat transaksi');
+}  
 
     $transactionId = $this->transactionModel->getInsertID();
 

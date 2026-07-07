@@ -4,22 +4,22 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class AddDiskonToTransactions extends Migration
+class AddPpnToTransactions extends Migration
 {
     public function up()
     {
         $this->forge->addColumn('transaction', [
-            'diskon' => [
+            'ppn' => [
                 'type'       => 'BIGINT',
                 'constraint' => 20,
                 'default'    => 0,
-                'after'      => 'total_harga'
+                'after'      => 'diskon',
             ],
         ]);
     }
 
     public function down()
     {
-        $this->forge->dropColumn('transaction', 'diskon');
+        $this->forge->dropColumn('transaction', 'ppn');
     }
 }
